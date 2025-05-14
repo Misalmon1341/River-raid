@@ -5,12 +5,13 @@
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <title>Classic River Raid</title>
     <meta name="River Raid" content="Pagina web recreando river raid con javascript">
+    <link rel="stylesheet" href="/docs/css/styles.css">
 </head>
 <body>
     <header>  
-        <h1 id="titulo-prin" class ="text-center">PLAY FREE RIVER RAID</h1>
-        <img src="/docs/img/river-raid-portada.png" alt="Portada de River Raid">
-        <nav id="regresar">
+        <h1 id="titulo-prin">PLAY FREE RIVER RAID</h1>
+        <img class="centro" src="/docs/img/river-raid-portada.png" alt="Portada de River Raid">
+        <nav id="regresar" class="grid-nav">
             <a href="#inicio">Inicio</a>
             <a href="#jugar">Jugar</a>
             <a href="#acerca">Acerca</a>
@@ -20,7 +21,7 @@
     </header>
     <main>
         <section id="inicio">
-            <h2 id="rey-pirata" class="text-center"><i><b>¿Qué es River Raid?</b></i></h2>
+            <h2 id="rey-pirata" class="text-center"><b>¿Qué es River Raid?</b></h2>
             <p>
                 River raid es un juego del genero shoot 'em up y shooter scrolling desarrollado
                 por Carol Shaw y publicado por Activision en el año 1982 para consolas atari. El
@@ -33,11 +34,13 @@
                 se agote el combustible del avión, el cual debe ser recargado periódicamente al pasar
                 sobre las marcas puestas para tal efecto en el río.
             </p>
-            <img src="/docs/img/portada-real-rr.jpg" alt="Portada original de River raid">
-            <a href="#regresar">Volver al inicio</a>
             </section>
              <section id="jugar">
-                <a href="#regresar">Volver al inicio</a>
+                <canvas>
+
+                </canvas>
+                 <img src="/docs/img/portada-real-rr.jpg" alt="Portada original de River raid">
+            <a id="inicio" class ="volver-inicio"href="#regresar">Volver al inicio</a>
              </section>
              <section id="acerca">
                 <h2> Información General</h2>
@@ -54,7 +57,7 @@
                 El primer proyecto de Carol Shaw en Atari fue un juego de polo para una campaña publicitaria de
                 una nueva colonia de Ralph Lauren. A pesar de terminar el juego y enviarlo, no recibió ningún
                 tipo de feedback y el juego no salió a la venta hasta años después.</p>
-                <img src="/docs/img/carol_shaw_box_small.jpg" alt="Foto de Carol Shaw">
+                <img class="centro"  src="/docs/img/carol_shaw_box_small.jpg" alt="Foto de Carol Shaw">
             <p>El primer juego diseñado por Carol Shaw que salió a la venta fue 3D tic tac toe, un cuatro en raya
                en 3D. Después llegó Video Checkers, un juego de damas. A estos proyectos le siguió la adaptación
                del juego Super Breakout a la consola Atari 2600 y también creó una calculadora para Atari 800.</p>
@@ -62,7 +65,7 @@
                 videojuegos estaba sufriendo un bache y trabajar en Atari no era tan divertido como solía, según
                 explica ella misma. De manera que cuando un antiguo compañero de Atari le propuso unirse a él en
                 Tandem, cambió de trabajo.</p>
-                <img src="/docs/img/3d_tic_tac_toe_text.jpg" alt="Imgagen 3d tic tac toe">
+                <img class="centro"  src="/docs/img/3d_tic_tac_toe_text.jpg" alt="Imgagen 3d tic tac toe">
             <p>En la nueva empresa no se dedicó a los videojuegos, sino que utilizó sus conocimientos de lenguaje 
                ensamblador para trabajar en un procesador. Su etapa en Tandem, sin embargo, fue efímera. Menos de
                año y medio después de empezar allí, recibió una llamada desde Activision (empresa creada por un
@@ -89,9 +92,9 @@
                 llega al límite máximo de puntuación, son factores que demuestran que este videojuego fue realizado con más dedicación
                 que la media del catálogo de la consola de Atari.
             </p>
-            <img src="/docs/img/river-raid-gameplay.gif" alt="River raid river-raid-gameplay">
+            <img class="centro"  src="/docs/img/river-raid-gameplay.gif" alt="River raid river-raid-gameplay">
 
-            <a href="#regresar">Volver al inicio</a>
+            <a id="inicio" class="volver-inicio" href="#regresar">Volver al inicio</a>
             </section>
             <Section id ="mecanicas">
             <h2>Mecanicas</h2>
@@ -116,7 +119,7 @@
             </ul>    
             </Section>
     </main>
-<footer>
+<footer class="grid-footer">
     <small>Hecho con amor por BoxyDev (desarrolladr indie de videojuegos)</small>
         <br>
         2025
