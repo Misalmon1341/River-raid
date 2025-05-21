@@ -9,7 +9,7 @@
 </head>
 <body>
     <header>  
-        <h1 id="titulo-prin">PLAY FREE RIVER RAID</h1>
+        <h1 id="titulo-prin">PROCEDURAL RIVER RAID</h1>
         <img class="centro" src="/docs/img/river-raid-portada.png" alt="Portada de River Raid">
         <button id="menu-toggle" aria-label="Abrir menú">&#9776;</button>
         <nav id="regresar" class="grid-nav">
@@ -35,15 +35,23 @@
                 se agote el combustible del avión, el cual debe ser recargado periódicamente al pasar
                 sobre las marcas puestas para tal efecto en el río.
             </p>
+             <button id="play-button">Jugar</button>
             </section>
-             <section id="jugar">
-                <canvas>
+            <section id="jugar" style="display:none;">
+  <div class="game-container">
+    <canvas id="gameCanvas" width="320" height="480"></canvas>
+    <div class="hud">
+      <p id="score">Puntuación: 0</p>
+    </div>
+  </div>
+</section>
 
-                </canvas>
-                 <img src="/docs/img/portada-real-rr.jpg" alt="Portada original de River raid">
-            <a id="inicio" class ="volver-inicio"href="#regresar">Volver al inicio</a>
-             </section>
+           <img id="playerSprite" src="sprites/player.png" hidden>
+            <img id="enemySprite" src="sprites/enemy.png" hidden>
+             <img id="bulletSprite" src="sprites/bullet.png" hidden>
+             <img id="explosionSprite" src="sprites/explosion.png" hidden>
              <section id="acerca">
+                 <img src="/docs/img/portada-real-rr.jpg" alt="PortadaRiverRaid">
                 <h2> Información General</h2>
                 <ul>
                     <li><b>Distribuidor:</b> Activision</li>
@@ -53,7 +61,8 @@
                     <li><b>Lanzamiento:</b> Diciembre de 1982</li>
                 </ul>
              </section>
-             <section id = "historia"><h2>La primer desarrolladora de videojuegos de la historia</h2>
+             <section id = "historia">
+                <h2>La primer desarrolladora de videojuegos de la historia</h2>
             <p>En aquella época los juegos los hacía una sola persona: diseño, programación, gráficos y sonido.
                 El primer proyecto de Carol Shaw en Atari fue un juego de polo para una campaña publicitaria de
                 una nueva colonia de Ralph Lauren. A pesar de terminar el juego y enviarlo, no recibió ningún
@@ -126,6 +135,7 @@
         2025
 </footer>    
 <button id="toggle-theme" aria-label="Cambiar tema">🌓</button>
-<script src="docs/js/main.js"></script>
+<script src="docs/js/main.js" defer></script>
+
 </body>
 </html>

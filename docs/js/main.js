@@ -1,170 +1,192 @@
 document.addEventListener("DOMContentLoaded", () => {
-    const button = document.getElementById("toggle-theme");
-    const body = document.body;
-  
-    const savedTheme = localStorage.getItem("theme");
-  
-    if (savedTheme === "light") {
-      body.classList.add("light-theme");
-      body.classList.remove("dark-theme");
-    } else {
-      body.classList.add("dark-theme");
-      body.classList.remove("light-theme");
-    }
-    button.addEventListener("click", () => {
-      if (body.classList.contains("light-theme")) {
-        
-        body.classList.remove("light-theme");
-        body.classList.add("dark-theme");
-        localStorage.setItem("theme", "dark");
-      } else {
-        body.classList.remove("dark-theme");
-        body.classList.add("light-theme");
-        localStorage.setItem("theme", "light");
-      }
-    });
+  const button = document.getElementById("toggle-theme");
+  const body = document.body;
+  const savedTheme = localStorage.getItem("theme");
+
+  if (savedTheme === "light") {
+    body.classList.add("light-theme");
+  } else {
+    body.classList.add("dark-theme");
+  }
+
+  button.addEventListener("click", () => {
+    body.classList.toggle("light-theme");
+    body.classList.toggle("dark-theme");
+    localStorage.setItem("theme", body.classList.contains("light-theme") ? "light" : "dark");
   });
 
-  document.addEventListener("DOMContentLoaded", function () {
-    const menuToggle = document.getElementById("menu-toggle");
-    const nav = document.querySelector("nav");
-  
-    menuToggle.addEventListener("click", () => {
-      nav.classList.toggle("open");
-    });
+  // MENÚ RESPONSIVE
+  const menuToggle = document.getElementById("menu-toggle");
+  const nav = document.querySelector("nav");
+  menuToggle.addEventListener("click", () => nav.classList.toggle("open"));
+
+  // BOTÓN JUGAR
+  const playButton = document.getElementById("play-button");
+  const jugarSection = document.getElementById("jugar");
+  playButton.addEventListener("click", () => {
+    jugarSection.style.display = "block";
+    playButton.style.display = "none";
+    iniciarJuego(); // <-- Arranca el juego
   });
-  const canvas = document.getElementById("gameCanvas");
-const ctx = canvas.getContext("2d");
-
-let player;
-let bullets = [];
-let enemies = [];
-let score = 0;
-let gameInterval;
-let isGameOver = false;
-const explosionSound = new Audio("sounds/explosion.wav");
-const shootSound = new Audio("sounds/shoot.wav");
-const bgMusic = new Audio("sounds/bg-music.mp3");
-bgMusic.loop = true;
-
-const keys = {
-  left: false,
-  right: false,
-  space: false,
-};
-
-document.addEventListener("keydown", (e) => {
-  if (e.code === "ArrowLeft") keys.left = true;
-  if (e.code === "ArrowRight") keys.right = true;
-  if (e.code === "Space") keys.space = true;
 });
 
-document.addEventListener("keyup", (e) => {
-  if (e.code === "ArrowLeft") keys.left = false;
-  if (e.code === "ArrowRight") keys.right = false;
-  if (e.code === "Space") keys.space = false;
-});
 
-function startGame() {
-  document.getElementById("gameOver").classList.add("hidden");
-  player = {
-    x: canvas.width / 2 - 15,
+// LÓGICA PRINCIPAL DEL JUEGO
+function iniciarJuego() {
+  const canvas = document.getElementById('gameCanvas');
+  const ctx = canvas.getContext('2d');
+
+  const playerImg = document.getElementById('playerSprite');
+  const enemyImg = document.getElementById('enemySprite');
+  const bulletImg = document.getElementById('bulletSprite');
+  const explosionImg = document.getElementById('explosionSprite');
+
+  let keys = {};
+  let bullets = [];
+  let enemies = [];
+  let explosions = [];
+  let score = 0;
+  let gameOver = false;
+
+  const player = {
+    x: canvas.width / 2 - 10,
     y: canvas.height - 60,
-    width: 30,
-    height: 40,
-    color: "lime",
+    width: 10,
+    height: 30,
+    speed: 5,
   };
-  bullets = [];
-  enemies = [];
-  score = 0;
-  isGameOver = false;
-  bgMusic.play();
-  gameInterval = setInterval(updateGame, 1000 / 60);
-  requestAnimationFrame(draw);
-}
 
-function updateGame() {
-  if (keys.left && player.x > 0) player.x -= 5;
-  if (keys.right && player.x + player.width < canvas.width) player.x += 5;
+  document.addEventListener('keydown', (e) => keys[e.code] = true);
+  document.addEventListener('keyup', (e) => keys[e.code] = false);
 
-  if (keys.space && bullets.length < 5) {
-    bullets.push({
-      x: player.x + player.width / 2 - 2,
-      y: player.y,
-      width: 4,
-      height: 10,
-      color: "yellow",
-    });
-    shootSound.currentTime = 0;
-    shootSound.play();
+  function shoot() {
+    bullets.push({ x: player.x + player.width / 2 - 2, y: player.y, width: 4, height: 10 });
+    playSound('shoot');
   }
 
-  bullets.forEach((b, i) => {
-    b.y -= 7;
-    if (b.y < 0) bullets.splice(i, 1);
-  });
+  function spawnEnemy() {
+    const x = Math.random() * (canvas.width - 10);
+    enemies.push({ x, y: -30, width: 10, height: 30, speed: 2 + Math.random() * 2 });
+  }
 
-  enemies.forEach((e, i) => {
-    e.y += e.speed;
-    if (e.y > canvas.height) enemies.splice(i, 1);
+  function playSound(type) {
+    const audio = new Audio(`sounds/${type}.wav`);
+    audio.volume = 0.5;
+    audio.play();
+  }
 
-    bullets.forEach((b, j) => {
-      if (
-        b.x < e.x + e.width &&
-        b.x + b.width > e.x &&
-        b.y < e.y + e.height &&
-        b.y + b.height > e.y
-      ) {
-        enemies.splice(i, 1);
-        bullets.splice(j, 1);
-        score += 100;
-        explosionSound.currentTime = 0;
-        explosionSound.play();
+  function createExplosion(x, y) {
+    explosions.push({ x, y, frame: 0, timer: 0 });
+  }
+
+  function update() {
+    if (gameOver) return;
+
+    // Movimiento
+    if (keys['ArrowLeft'] && player.x > 0) player.x -= player.speed;
+    if (keys['ArrowRight'] && player.x < canvas.width - player.width) player.x += player.speed;
+
+    if (keys['Space']) {
+      if (!keys['_shot']) {
+        shoot();
+        keys['_shot'] = true;
       }
-    });
-
-    if (
-      player.x < e.x + e.width &&
-      player.x + player.width > e.x &&
-      player.y < e.y + e.height &&
-      player.y + player.height > e.y
-    ) {
-      gameOver();
+    } else {
+      keys['_shot'] = false;
     }
-  });
 
-  if (Math.random() < 0.02) {
-    enemies.push({
-      x: Math.random() * (canvas.width - 30),
-      y: -30,
-      width: 30,
-      height: 30,
-      color: "red",
-      speed: 2 + Math.random() * 2,
+    // Actualizar balas
+    bullets.forEach(b => b.y -= 5);
+    bullets = bullets.filter(b => b.y > 0);
+
+    // Actualizar enemigos
+    enemies.forEach(e => e.y += e.speed);
+    enemies = enemies.filter(e => e.y < canvas.height);
+
+    // Colisiones
+    for (let i = enemies.length - 1; i >= 0; i--) {
+      const e = enemies[i];
+
+      // Colisión con jugador
+      if (
+        e.x < player.x + player.width &&
+        e.x + e.width > player.x &&
+        e.y < player.y + player.height &&
+        e.y + e.height > player.y
+      ) {
+        gameOver = true;
+        alert('¡Has perdido! Puntuación: ' + score);
+        location.reload();
+        return;
+      }
+
+      // Colisión con bala
+      for (let j = bullets.length - 1; j >= 0; j--) {
+        const b = bullets[j];
+        if (
+          b.x < e.x + e.width &&
+          b.x + b.width > e.x &&
+          b.y < e.y + e.height &&
+          b.y + b.height > e.y
+        ) {
+          enemies.splice(i, 1);
+          bullets.splice(j, 1);
+          score++;
+          playSound('explosion');
+          createExplosion(e.x - 8, e.y - 8);
+          break;
+        }
+      }
+    }
+
+    // Spawnear enemigos aleatorios
+    if (Math.random() < 0.03) {
+      spawnEnemy();
+    }
+
+    // Actualizar explosiones
+    explosions.forEach(ex => {
+      ex.timer++;
+      if (ex.timer % 5 === 0) ex.frame++;
     });
+    explosions = explosions.filter(ex => ex.frame < 4);
   }
 
-  document.getElementById("score").innerText = score;
+  function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  // Dibuja jugador
+  ctx.fillStyle = 'lime';
+  ctx.fillRect(player.x, player.y, player.width, player.height);
+
+  // Dibuja balas
+  ctx.fillStyle = 'yellow';
+  bullets.forEach(b => ctx.fillRect(b.x, b.y, b.width, b.height));
+
+  // Dibuja enemigos
+  ctx.fillStyle = 'red';
+  enemies.forEach(e => ctx.fillRect(e.x, e.y, e.width, e.height));
+
+  // Dibuja explosiones
+  ctx.fillStyle = 'orange';
+  explosions.forEach(ex => ctx.beginPath() || ctx.arc(ex.x, ex.y, 10, 0, 2 * Math.PI) || ctx.fill());
+
+  // Actualiza puntuación
+  document.getElementById('score').textContent = 'Puntuación: ' + score;
+  }
+
+  function loop() {
+    update();
+    draw();
+    requestAnimationFrame(loop);
+  }
+
+  // Música de fondo
+  const music = new Audio('sounds/bg-music.mp3');
+  music.loop = true;
+  music.volume = 0.3;
+  music.play();
+
+  loop();
 }
 
-function draw() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  drawEntity(player);
-  bullets.forEach(drawEntity);
-  enemies.forEach(drawEntity);
-
-  if (!isGameOver) requestAnimationFrame(draw);
-}
-
-function drawEntity(e) {
-  ctx.fillStyle = e.color;
-  ctx.fillRect(e.x, e.y, e.width, e.height);
-}
-
-function gameOver() {
-  clearInterval(gameInterval);
-  isGameOver = true;
-  document.getElementById("gameOver").classList.remove("hidden");
-  bgMusic.pause();
-  bgMusic.currentTime = 0;
-}

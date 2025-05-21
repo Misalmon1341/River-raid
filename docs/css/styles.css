@@ -17,7 +17,7 @@ font-size: 4rem;
 body{
     font-size: 1rem;
     box-sizing: border-box;
-    font-family: 'Times New Roman', Times, serif;
+    font-family: 'Courier New', monospace;
     background-color: #BB0045;
     color: white;
 }
@@ -122,10 +122,6 @@ img{
   padding: 20px;
 }
 
-canvas {
-  background-color: #000;
-  border: 2px solid #fff;
-}
 
 .hud {
   margin-top: 10px;
@@ -146,4 +142,20 @@ button {
 
 button:hover {
   background: #666;
+}
+
+#jugar {
+  display: none;
+  text-align: center;
+}
+
+canvas {
+  display: block;
+  margin: 0 auto;
+  border: 3px solid white;
+  background-color: #222;
+}
+
+#score {
+  margin-bottom: 10px;
 }
