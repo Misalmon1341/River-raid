@@ -56,8 +56,13 @@ function iniciarJuego() {
     speed: 5,
   };
 
-  document.addEventListener('keydown', (e) => keys[e.code] = true);
-  document.addEventListener('keyup', (e) => keys[e.code] = false);
+document.addEventListener('keydown', (e) => {
+  if (e.code === 'Space' || e.code === 'ArrowUp' || e.code === 'ArrowDown') {
+    e.preventDefault(); // <-- Previene el scroll
+  }
+  keys[e.code] = true;
+});
+ document.addEventListener('keyup', (e) => keys[e.code] = false);
 
   function shoot() {
     bullets.push({ x: player.x + player.width / 2 - 2, y: player.y, width: 4, height: 10 });
