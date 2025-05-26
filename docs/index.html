@@ -37,13 +37,13 @@
             </p>
              <button id="play-button">Jugar</button>
             </section>
-            <section id="jugar" style="display:none;">
+            <section>
+  <div id="jugar" style="display: none;">
   <div class="game-container">
+    <div id="score" class="hud">Puntuación: 0</div>
     <canvas id="gameCanvas" width="320" height="480"></canvas>
-    <div class="hud">
-      <p id="score">Puntuación: 0</p>
-    </div>
   </div>
+</div>
 </section>
 
            <img id="playerSprite" src="sprites/player.png" hidden>
@@ -136,6 +136,9 @@
 </footer>    
 <button id="toggle-theme" aria-label="Cambiar tema">🌓</button>
 <script src="js/main.js" defer></script>
-
+<img id="playerSprite" src="sprites/player.png" style="display: none;">
+<img id="enemySprite" src="sprites/enemy.png" style="display: none;">
+<img id="bulletSprite" src="sprites/bullet.png" style="display: none;">
+<img id="explosionSprite" src="sprites/explosion.png" style="display: none;">
 </body>
 </html>
